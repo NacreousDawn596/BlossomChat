@@ -116,7 +116,8 @@ def home():
 
 @app.route('/admin')
 def admin():
-    if "email" not in session or session['valid'] != 2:
+    user = query_db('SELECT * FROM users WHERE email = ?', [session['email']], one=True, file='users.db')
+    if "email" not in session or user['valid'] != 2:
         return redirect(url_for('login'))
     
     return render_template('admin_panel.html')
