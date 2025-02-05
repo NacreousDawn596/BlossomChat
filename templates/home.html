@@ -42,7 +42,7 @@
                         'dusty-rose': '#dca2a8'
                     },
                     boxShadow: {
-                        'girly': '2px 2px 8px rgba(220, 162, 168, 0.15)'
+                        'ies': '2px 2px 8px rgba(220, 162, 168, 0.15)'
                     }
                 }
             }
@@ -84,7 +84,7 @@
 
                 <div class="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-hidden">
                     {% for message in messages %}
-                    {% if message['email'] == session['email'] or message['email'] == "i.elalaoui@ensam.ac.ma" %}
+                    {% if message['email'] == session['email'] %}
                     <div
                         class="chat-bubble p-4 max-w-[80%] girly-font bg-blossom-pink ml-auto rounded-br-[5px] text-dusty-rose">
                         <p class="text-sm font-semibold mb-1">{{ message.sender }} 💐</p>

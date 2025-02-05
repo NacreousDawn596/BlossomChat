@@ -100,7 +100,6 @@ def waitlist():
     if "email" not in session:
         return redirect(url_for('login'))
     user = query_db('SELECT * FROM users WHERE email = ?', [session['email']], one=True, file='users.db')
-    print(dict(user))
     if user and user['valid'] > 0:
         return redirect(url_for('home'))
     socketio.emit("admin", [session['username'], session['email']])
@@ -124,20 +123,17 @@ def admin():
 
 @app.route('/admin/<email>')
 def admin_user(email):
-    print('aaa')
     if "email" not in session or session['valid'] != 2:
         return redirect(url_for('login'))
     
     user = query_db('SELECT * FROM users WHERE email = ?', [email], one=True, file='users.db')
     if user is None:
-        print("uuuu")
         return redirect(url_for('admin'))
     
     else:
         update_db('UPDATE users SET valid = 1 WHERE email = ?', args=[email], file='users.db')
-        print("ooooooo")
         e = query_db("Select * FROM users WHERE valid = 1", one=False, file="users.db")
-        socketio.emit('update_members', dict(e))
+        socketio.emit('update_members', e)
         # data[1]
         socketio.emit('accepted', email)
         

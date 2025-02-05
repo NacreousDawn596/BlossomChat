@@ -4,3 +4,4 @@ include/
 lib/
 lib64/
 # users.db
+user_db_setup.py
