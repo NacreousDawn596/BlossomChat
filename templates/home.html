@@ -169,7 +169,7 @@
                 }
             },
             mounted() {
-                this.socket = io("https://romantic-similarly-platypus.ngrok-free.app");
+                this.socket = io();
 
                 this.socket.on("update_members", (user) => {
                     this.members = user;
