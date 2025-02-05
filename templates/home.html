@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌸 Blossom Chat</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Playfair+Display:wght@500&display=swap"
+        rel="stylesheet">
+    <style>
+        .fonties {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        .chat-bubble {
+            transition: all 0.2s ease;
+            border-radius: 20px 20px 20px 0;
+        }
+
+        .mobile-sidebar {
+            background: rgba(255, 240, 245, 0.98);
+            box-shadow: 4px 0 15px rgba(255, 192, 203, 0.2);
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #fff0f5 0%, #f8f0ff 100%);
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'blossom-pink': '#ffddee',
+                        'vintage-rose': '#f4c2c2',
+                        'lavender-mist': '#e6e6fa',
+                        'pearl-white': '#fffaf0',
+                        'dusty-rose': '#dca2a8'
+                    },
+                    boxShadow: {
+                        'girly': '2px 2px 8px rgba(220, 162, 168, 0.15)'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="gradient-bg">
+    <div id="app" class="h-screen flex flex-col">
+        <div class="bg-pearl-white p-4 flex items-center justify-between shadow-girly">
+            <button @click="toggleSidebar"
+                class="md:hidden p-2 rounded-full bg-blossom-pink hover:bg-vintage-rose transition">
+                🌸
+            </button>
+            <h1 class="girly-font text-3xl text-dusty-rose">Blossom Chat 🌺</h1>
+            <div class="w-9 h-9 flex items-center justify-center bg-blossom-pink rounded-full">💌</div>
+        </div>
+
+        <div class="flex flex-1 overflow-hidden">
+            <!-- <div :class="{'mobile-sidebar': true, 'active': sidebarActive}"
+                class="md:block md:relative h-full z-40 flex flex-col p-4 transform transition-transform duration-300">
+                <div class="flex items-center justify-between">
+                    <h2 class="girly-font text-2xl text-dusty-rose">Friends</h2>
+                    <button @click="toggleSidebar" class="md:hidden text-dusty-rose">✕</button>
+                </div>
+                <div class="mt-4 text-dusty-rose">🌸 [[ onlineCount ]] Blossoming Friends</div>
+                <ul class="mt-4 space-y-3">
+                    <li v-for="member in members" :key="member?.name"
+                        class="flex items-center text-dusty-rose p-2 rounded-lg hover:bg-blossom-pink transition">
+                        🌺 [[ member.name ]]
+                    </li>
+                </ul>
+            </div> -->
+
+            <div class="flex-1 flex flex-col">
+                <div class="bg-lavender-mist p-4 girly-font text-xl text-dusty-rose shadow-girly">
+                    💐 Secret Garden Chat
+                </div>
+
+                <div class="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-hidden">
+                    {% for message in messages %}
+                    {% if message['email'] == session['email'] or message['email'] == "i.elalaoui@ensam.ac.ma" %}
+                    <div
+                        class="chat-bubble p-4 max-w-[80%] girly-font bg-blossom-pink ml-auto rounded-br-[5px] text-dusty-rose">
+                        <p class="text-sm font-semibold mb-1">{{ message.sender }} 💐</p>
+                        <p class="text-base">{{ message.text }}</p>
+                        <div class="text-xs mt-2 opacity-70">{{ message.time }}</div>
+                    </div>
+                    {% else %}
+                    <div class="chat-bubble p-4 max-w-[80%] girly-font bg-pearl-white shadow-girly text-dusty-rose">
+                        <p class="text-sm font-semibold mb-1">{{ message.sender }} 💐</p>
+                        <p class="text-base">{{ message.text }}</p>
+                        <div class="text-xs mt-2 opacity-70">{{ message.time }}</div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                    <div v-for="message in messages" :key="message.id" class="chat-bubble p-4 max-w-[80%] girly-font"
+                        :class="message.sender.email === currentUser.email || message.sender.email == 'i.ElAlaoui@ensam.ac.ma' ? 
+                            'bg-blossom-pink ml-auto rounded-br-[5px] text-dusty-rose' : 
+                            'bg-pearl-white shadow-girly text-dusty-rose'">
+                        <p class="text-sm font-semibold mb-1">[[ message.sender ]] 💐</p>
+                        <p class="text-base">[[ message.text ]]</p>
+                        <div class="text-xs mt-2 opacity-70">[[ message.time ]]</div>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-pearl-white border-t border-blossom-pink flex items-center space-x-3">
+                    <input v-model="newMessage" @keyup.enter="sendMessage"
+                        class="flex-1 bg-white px-5 py-3 rounded-full focus:outline-none focus:ring-2 focus:ring-blossom-pink placeholder-dusty-rose"
+                        placeholder="Write your sweet message...">
+                    <button @click="sendMessage"
+                        class="bg-blossom-pink px-6 py-3 rounded-full text-dusty-rose hover:bg-vintage-rose transition transform hover:scale-105">
+                        Send 💖
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { createApp } = Vue;
+
+        createApp({
+            delimiters: ['[[', ']]'],
+            data() {
+                return {
+                    socket: null,
+                    currentUser: { username: "", email: "" },
+                    members: [],
+                    messages: [],
+                    newMessage: "",
+                    sidebarActive: false
+                };
+            },
+            computed: {
+                onlineCount() {
+                    return this.members.length;
+                }
+            },
+            methods: {
+                sendMessage() {
+                    if (this.newMessage.trim()) {
+                        const message = {
+                            text: this.newMessage,
+                            sender: this.currentUser,
+                            time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+                            id: Date.now()
+                        };
+
+                        this.socket.emit("send_message", message);
+                        this.newMessage = "";
+                    }
+                },
+                toggleSidebar() {
+                    this.sidebarActive = !this.sidebarActive;
+                },
+                joinChat() {
+                    const user = {
+                        username: "{{ session['username'] | default('', true) }}",
+                        email: "{{ session['email'] | default('', true) }}"
+                    };
+
+                    this.currentUser = user;
+                }
+            },
+            mounted() {
+                this.socket = io("https://romantic-similarly-platypus.ngrok-free.app");
+
+                this.socket.on("update_members", (user) => {
+                    this.members = user;
+                });
+
+                this.socket.on("receive_message", (eee) => {
+                    this.messages.push(eee);
+                });
+
+                this.joinChat();
+            }
+        }).mount("#app");
+    </script>
+</body>
+
+</html>

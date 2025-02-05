@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <style>
+        @import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;800;900&display=swap);
+        html, body{
+            width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: 50vw 50vw;
+            place-content: center;
+            color: aliceblue;
+            background-color: #333;
+            font-family: 'Poppins', sans-serif;
+            user-select: none;
+        }
+
+        section {
+            height: 15vh;
+            margin: 10vh 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        div {
+            border-radius: 25px;
+            border-style: solid;
+            border-width: min(1vw, 1vh);
+            border-color: blueviolet;
+            min-width: fit-content;
+            width: max-content;
+            padding: 1vh 2vw;
+            flex-direction: column;
+            background-color: #252525;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+    <script>
+        const socket = io("https://romantic-similarly-platypus.ngrok-free.app");
+        socket.on("admin", (data) => {
+            section = document.createElement("section")
+            div = document.createElement("div")
+            h1 = document.createElement("h1")
+            p = document.createElement("p")
+            h1.textContent = data[0]
+            p.textContent = data[1]
+            div.appendChild(h1)
+            div.appendChild(p)
+            section.appendChild(div)
+            document.body.appendChild(section)
+
+            section.addEventListener('click', () => {
+                window.location.href = '/admin/' + data[1];
+            });
+        });
+    </script>
+</body>
+</html>

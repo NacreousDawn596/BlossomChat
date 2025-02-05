@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlossomChat - Waitlist</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <link rel="stylesheet" href="/static/waitlist.css">
+    <script>
+        const socket = io("https://romantic-similarly-platypus.ngrok-free.app");
+        socket.on("accepted", (email) => {
+            if (email == "{{session['email']}}") {
+                console.log("Connected to the server");
+                window.location.reload()
+            }
+        });
+    </script>
+</head>
+<body>
+    <section>
+        <h1>Waitlist</h1>
+        <p>Thank you for your interest in our service. We are currently in the process of onboarding new users. We will notify you as soon as we are ready to welcome you aboard.</p>
+    </section>
+</body>
+</html>
