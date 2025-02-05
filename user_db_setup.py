@@ -14,7 +14,7 @@ c.execute('''CREATE TABLE users
              (email TEXT PRIMARY KEY, username TEXT, date INT, valid INT)''')
 
 users = [
-    ("k.aferiad@edu.umi.ac.ma", "k.aferiad", 1738516182, 2),
+    ("i.elalaoui", "i.elalaoui", 1738516182, 2),
 ]
 
 c.executemany('INSERT INTO users VALUES (?, ?, ?, ?)', users)

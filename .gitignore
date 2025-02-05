@@ -3,4 +3,4 @@ __pycache__
 include/
 lib/
 lib64/
-users.db
+# users.db
