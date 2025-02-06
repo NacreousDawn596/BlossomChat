@@ -1,0 +1,19 @@
+{
+    "name": "🌸 Blossom Chat",
+    "short_name": "blossomchat",
+    "icons": [
+        {
+            "src": "/icon.192x.jpg",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/icon.512x.jpg",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#f1b7f3",
+    "background_color": "#f1b7f3",
+    "display": "standalone"
+}

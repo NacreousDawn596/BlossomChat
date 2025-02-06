@@ -13,11 +13,11 @@ c = conn.cursor()
 c.execute('''CREATE TABLE users
              (email TEXT PRIMARY KEY, username TEXT, date INT, valid INT)''')
 
-users = [
-    ("i.elalaoui@ensam.ac.ma", "i.elalaoui", 1738516182, 2),
-]
+# users = [
+#     ("k.aferiad@ensam.ac.ma", "k.aferiad", 1738516182, 2),
+# ]
 
-c.executemany('INSERT INTO users VALUES (?, ?, ?, ?)', users)
+# c.executemany('INSERT INTO users VALUES (?, ?, ?, ?)', users)
 
 conn.commit()
 conn.close()
